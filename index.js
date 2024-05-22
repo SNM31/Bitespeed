@@ -1,8 +1,10 @@
+import identiyRoute from './routes/identity.js'  
 const express =require('express');
 const mysql = require('mysql2');
 require('dotenv').config();
 
 const app=express()
+app.use(express.json());
 const port=3000;
 const dbName = process.env.DATABASE_NAME;
 const dbUser = process.env.DATABASE_USERNAME;
@@ -25,6 +27,7 @@ const connect =  () => {
       console.log(error);
     }
   };
+app.use('/indentify',identiyRoute);
 app.get('/',(req,res)=>{
     res.send("Server started")
 })
