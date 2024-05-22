@@ -1,7 +1,10 @@
 import express from 'express'
-import { identifyCustomer } from '../controllers/indentify'
+import { identifyCustomer } from '../controllers/indentify.js'
+
 const router=express.Router()
 
-router.post('/identity',identifyCustomer)
+console.log('code reached in route');
+
+router.post('/',identifyCustomer)
 
 export default router

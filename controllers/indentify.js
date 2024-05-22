@@ -2,6 +2,7 @@ import express from 'express'
 
 export const identifyCustomer=async(req,res)=>{
   try{
+    console.log('code reached in Error block');
     const expectedKeys = ['email', 'phoneNumber'];
 
     // to check if sent payload contains expected keys only
