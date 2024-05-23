@@ -7,7 +7,7 @@ const dbName = process.env.DATABASE_NAME;
 const dbUser = process.env.DATABASE_USERNAME;
 const dbPass = process.env.DATABASE_PASSWORD;
 
-const sequelize = new Sequelize(`mysql://root:${dbPass}@localhost:3306}/${dbName}`);
+const sequelize = new Sequelize(`mysql://root:${dbPass}@localhost:3306/${dbName}`);
 
 class Contact extends Model {}
 
@@ -52,13 +52,14 @@ Contact.init({
   paranoid: true
 });
 
+export default Contact;
 // Synchronize the model with the database
-(async () => {
-  try {
-    console.log("Trying to call sync()...");
-    await Contact.sync();
-    console.log("Successfully created schema in database");
-  } catch (error) {
-    console.error("Failed to create schema in database:", error);
-  }
-})();
+// (async () => {
+//   try {
+//     console.log("Trying to call sync()...");
+//     await Contact.sync();
+//     console.log("Successfully created schema in database");
+//   } catch (error) {
+//     console.error("Failed to create schema in database:", error);
+//   }
+// })();
