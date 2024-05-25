@@ -53,11 +53,13 @@ export const identifyCustomer = async (req, res) => {
         let allPhoneNumberInMatchedContacts=[]
         let secondaryContactIds =[]
         let primaryContact =(emailMatchedContacts[0].linkPrecedence==='primary') ? emailMatchedContacts[0] : await (Contact.findOne({ where :{id:emailMatchedContacts.find(contact => contact.linkedId !== null).linkedId }}))
-        const emails=(primaryContact.email!=email) ? [primaryContact.email,email] : [email]
-        allPhoneNumberInMatchedContacts.push(primaryContact.phoneNumber)
+
+        const emails=(primaryContact.email && primaryContact.email!=email) ? [primaryContact.email,email] : [email]
+
+        if(primaryContact.phoneNumber) allPhoneNumberInMatchedContacts.push(primaryContact.phoneNumber)
         console.log(`primaryContact: ${JSON.stringify(primaryContact.toJSON())}`)
         emailMatchedContacts.forEach(contact=>{
-            if(contact.phoneNumber && primaryContact.phoneNumber!=contact.phoneNumber) allPhoneNumberInMatchedContacts.push(contact.phoneNumber)
+            if(contact.phoneNumber && primaryContact.phoneNumber && primaryContact.phoneNumber!=contact.phoneNumber) allPhoneNumberInMatchedContacts.push(contact.phoneNumber)
             if(contact.linkPrecedence==='secondary') secondaryContactIds.push(contact.id)
         })
         if(phoneNumber) allPhoneNumberInMatchedContacts.push(phoneNumber)
@@ -90,10 +92,10 @@ export const identifyCustomer = async (req, res) => {
         let allEmailInMatchedContacts=[]
         let secondaryContactIds =[]
         let primaryContact =(phoneNumberMatchedContacts[0].linkPrecedence==='primary') ? phoneNumberMatchedContacts[0] : await (Contact.findOne({ where :{id:phoneNumberMatchedContacts.find(contact => contact.linkedId !== null).linkedId }}))
-        let phoneNumbers=(primaryContact.phoneNumber!=phoneNumber) ? [primaryContact.phoneNumber,phoneNumber]: [phoneNumber]
-        allEmailInMatchedContacts.push(primaryContact.email)
+        let phoneNumbers=(primaryContact.phoneNumber && primaryContact.phoneNumber!=phoneNumber) ? [primaryContact.phoneNumber,phoneNumber]: [phoneNumber]
+        if(primaryContact.email) allEmailInMatchedContacts.push(primaryContact.email)
         phoneNumberMatchedContacts.forEach(contact=>{
-            if(contact.email && contact.email!=primaryContact.email) allEmailInMatchedContacts.push(contact.email)
+            if(contact.email && primaryContact.email && contact.email!=primaryContact.email) allEmailInMatchedContacts.push(contact.email)
             if(contact.linkPrecedence==='secondary') secondaryContactIds.push(contact.id)
         })
         if(email) allEmailInMatchedContacts.push(email)
