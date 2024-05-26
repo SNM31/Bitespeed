@@ -29,7 +29,6 @@ export const identifyCustomer = async (req, res) => {
         where: {
           email: email,
         },
-        order: [{ createdAt: 'ASC' }]
       });
     }
 
@@ -38,7 +37,6 @@ export const identifyCustomer = async (req, res) => {
         where: {
           phoneNumber: phoneNumber,
         },
-        order: [{ createdAt: 'ASC' }]
       });
     }
 
@@ -48,7 +46,7 @@ export const identifyCustomer = async (req, res) => {
       {
         console.log("Entered in correct block where data with emai!=null and phoneNumber==null");
         // need to iterate data for email and find for the oldest created data where email matches
-        // emailMatchedContacts.sort((a, b) => a.createdAt - b.createdAt);
+        emailMatchedContacts.sort((a, b) => a.createdAt - b.createdAt);
          emailMatchedContacts.forEach(contact => {
             console.log("data: "+JSON.stringify(contact.toJSON()));
           });
@@ -93,7 +91,7 @@ export const identifyCustomer = async (req, res) => {
       }
       else if(!emailMatchedContacts.length>0 && phoneNumberMatchedContacts.length>0)
       {
-        // phoneNumberMatchedContacts.sort((a, b) => a.createdAt - b.createdAt);
+        phoneNumberMatchedContacts.sort((a, b) => a.createdAt - b.createdAt);
         let allEmailInMatchedContacts=[]
         let secondaryContactIds =[]
         let primaryContact =(phoneNumberMatchedContacts[0].linkPrecedence==='primary') ? phoneNumberMatchedContacts[0] : await (Contact.findOne({ where :{id:phoneNumberMatchedContacts.find(contact => contact.linkedId !== null).linkedId }}))
