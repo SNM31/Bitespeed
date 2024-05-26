@@ -6,8 +6,9 @@ dotenv.config();
 const dbName = process.env.DATABASE_NAME;
 const dbUser = process.env.DATABASE_USERNAME;
 const dbPass = process.env.DATABASE_PASSWORD;
+const dbHost=process.env.DATABASE_HOST;
 
-const sequelize = new Sequelize(`mysql://root:${dbPass}@localhost:3306/${dbName}`);
+const sequelize = new Sequelize(`mysql://${dbUser}:${dbPass}@${dbHost}:3306/${dbName}`);
 
 class Contact extends Model {}
 
