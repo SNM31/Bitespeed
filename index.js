@@ -11,11 +11,12 @@ const port = 3000;
 const dbName = process.env.DATABASE_NAME;
 const dbUser = process.env.DATABASE_USERNAME;
 const dbPass = process.env.DATABASE_PASSWORD;
+const dbHost=process.env.DATABASE_HOST;
 
 const connect = () => {
   try {
     const connection = mysql.createConnection({
-      host: 'localhost',
+      host: dbHost ,
       user: dbUser,
       password: dbPass,
       database: dbName
