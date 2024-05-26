@@ -21,22 +21,24 @@ export const identifyCustomer = async (req, res) => {
       return res.status(400).send("Both email and phoneNumber cannot be null.");
     }
 
-    let emailMatchedContacts;
-    let phoneNumberMatchedContacts;
+    let emailMatchedContacts=[];
+    let phoneNumberMatchedContacts=[];
 
-    if (email) {
+    if (email) {   // fetching all records that match with emails
       emailMatchedContacts = await Contact.findAll({
         where: {
           email: email,
         },
+        order: [{ createdAt: 'ASC' }]
       });
     }
 
-    if (phoneNumber) {
+    if (phoneNumber) {  // fetching all records that match with phonenumbers
       phoneNumberMatchedContacts = await Contact.findAll({
         where: {
           phoneNumber: phoneNumber,
         },
+        order: [{ createdAt: 'ASC' }]
       });
     }
 
@@ -46,7 +48,7 @@ export const identifyCustomer = async (req, res) => {
       {
         console.log("Entered in correct block where data with emai!=null and phoneNumber==null");
         // need to iterate data for email and find for the oldest created data where email matches
-        emailMatchedContacts.sort((a, b) => a.createdAt - b.createdAt);
+        // emailMatchedContacts.sort((a, b) => a.createdAt - b.createdAt);
          emailMatchedContacts.forEach(contact => {
             console.log("data: "+JSON.stringify(contact.toJSON()));
           });
@@ -64,14 +66,17 @@ export const identifyCustomer = async (req, res) => {
         })
         if(phoneNumber) allPhoneNumberInMatchedContacts.push(phoneNumber)
         try{
-          const customerContact = await Contact.create({
-            email: email,
-            phoneNumber: phoneNumber,
-            linkPrecedence: 'secondary',
-            linkedId: primaryContact.id
-           });
-           secondaryContactIds.push(customerContact.id)
-           const responseObj={
+          if(phoneNumber){
+            const customerContact = await Contact.create({
+               email: email,
+               phoneNumber: phoneNumber,
+               linkPrecedence: 'secondary',
+               linkedId: primaryContact.id
+             });
+             secondaryContactIds.push(customerContact.id)
+            }
+           
+            const responseObj={
            
             contact: {
                 primaryContactId: primaryContact.id,
@@ -88,7 +93,7 @@ export const identifyCustomer = async (req, res) => {
       }
       else if(!emailMatchedContacts.length>0 && phoneNumberMatchedContacts.length>0)
       {
-        phoneNumberMatchedContacts.sort((a, b) => a.createdAt - b.createdAt);
+        // phoneNumberMatchedContacts.sort((a, b) => a.createdAt - b.createdAt);
         let allEmailInMatchedContacts=[]
         let secondaryContactIds =[]
         let primaryContact =(phoneNumberMatchedContacts[0].linkPrecedence==='primary') ? phoneNumberMatchedContacts[0] : await (Contact.findOne({ where :{id:phoneNumberMatchedContacts.find(contact => contact.linkedId !== null).linkedId }}))
@@ -100,13 +105,15 @@ export const identifyCustomer = async (req, res) => {
         })
         if(email) allEmailInMatchedContacts.push(email)
         try{
-          const customerContact = await Contact.create({
-            email: email,
-            phoneNumber: phoneNumber,
-            linkPrecedence: 'secondary',
-            linkedId: primaryContact.id
-           });
-           secondaryContactIds.push(customerContact.id)
+            if(email){
+                const customerContact = await Contact.create({
+                    email: email,
+                    phoneNumber: phoneNumber,
+                    linkPrecedence: 'secondary',
+                    linkedId: primaryContact.id
+                })
+                secondaryContactIds.push(customerContact.id)
+            }
            const responseObj={
            
             contact: {
@@ -177,8 +184,8 @@ export const identifyCustomer = async (req, res) => {
     const responseObj = {
       contact: {
         primaryContactId: customerContact.id,
-        emails: [customerContact.email],
-        phoneNumbers: [customerContact.phoneNumber],
+        emails: email ? [email]:[] ,
+        phoneNumbers: phoneNumber ? [phoneNumber]:[],
         secondaryContactIds: [],
       },
     };
