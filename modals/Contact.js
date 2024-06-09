@@ -7,8 +7,9 @@ const dbName = process.env.DATABASE_NAME;
 const dbUser = process.env.DATABASE_USERNAME;
 const dbPass = process.env.DATABASE_PASSWORD;
 const dbHost=process.env.DATABASE_HOST;
+const dbPort=process.env.DATABASE_PORT;
 
-const sequelize = new Sequelize(`mysql://${dbUser}:${dbPass}@${dbHost}:3306/${dbName}`);
+const sequelize = new Sequelize(`mysql://${dbUser}:${dbPass}@${dbHost}:${dbPort}/${dbName}`);
 
 class Contact extends Model {}
 
